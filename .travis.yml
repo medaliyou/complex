@@ -9,15 +9,15 @@ script:
   - docker run -e CI=true medaliyou/react-test npm test -- --coverage
 
 after_success:
-  - docker build -t medaliyou/multi-client ./client
-  - docker build -t medaliyou/multi-nginx  ./nginx
-  - docker build -t medaliyou/multi-server ./server
-  - docker build -t medaliyou/multi-worker ./worker
+  - docker build -t medaliyou/multi-nginx:latest  ./nginx
+  - docker build -t medaliyou/multi-server:latest ./server
+  - docker build -t medaliyou/multi-worker:latest ./worker
+  - docker build -t medaliyou/multi-client:latest ./client
+
   # Login to the Docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   # Push images to Docker Hub
-  - docker push medaliyou/multi-client
-  - docker push medaliyou/multi-nginx
-  - docker push medaliyou/multi-server
-  - docker push medaliyou/multi-worker
-  
+  - docker push medaliyou/multi-nginx:latest
+  - docker push medaliyou/multi-server:latest
+  - docker push medaliyou/multi-worker:latest
+  - docker push medaliyou/multi-client:latest
