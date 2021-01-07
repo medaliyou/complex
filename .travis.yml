@@ -1,0 +1,23 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t medaliyou/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true medaliyou/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t medaliyou/multi-client ./client
+  - docker build -t medaliyou/multi-nginx  ./nginx
+  - docker build -t medaliyou/multi-server ./server
+  - docker build -t medaliyou/multi-worker ./worker
+  # Login to the Docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Push images to Docker Hub
+  - docker push medaliyou/multi-client
+  - docker push medaliyou/multi-nginx
+  - docker push medaliyou/multi-server
+  - docker push medaliyou/multi-worker
+  
